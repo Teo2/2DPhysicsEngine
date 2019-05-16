@@ -79,6 +79,10 @@ public abstract class Solid implements LevelObject {
 		return linear + rotational;
 	}
 	
+	public double getMechanicalEnergy() {
+		return getKineticEnergy() - mass * Level.gravity * position.getY();
+	}
+	
 	public void render(Graphics g) {
 		render(g, 0x000000);
 	}
@@ -117,7 +121,6 @@ public abstract class Solid implements LevelObject {
 	}
 	
 	public String toString() {
-		double energy = getKineticEnergy() + getMass() * Level.gravity * getPosition().getY();
-		return "Energy: " + energy;
+		return "Energy: " + getMechanicalEnergy();
 	}
 }

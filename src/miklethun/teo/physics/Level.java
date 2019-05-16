@@ -1,19 +1,25 @@
 package miklethun.teo.physics;
 
 import java.awt.Graphics;
+import java.awt.event.KeyEvent;
 import java.util.ArrayList;
 import java.util.List;
 
 public class Level {
 	public static double gravity = 0.04;
 	public List<Solid> objects = new ArrayList<Solid>();
-	
+	public boolean paused = false;
 	public Level() {
 		//objects.add(new Movable(new Vector(120,90), new Vector(210, 110), new Vector(200,200), new Vector(170,240), new Vector(100,200), new Vector(140,140)));
 		//objects.add(new Movable(new Vector(307,333), new Vector(377, 300), new Vector(400,400), new Vector(300,500)));
 		//objects.add(new Movable(new Vector(300,350), new Vector(400, 450), new Vector(500,350), new Vector(400,250)));
 		
-		int points = 6;
+		//for(int i = 0; i < 1; i++) {
+		//	objects.add(new Movable(new Vector(30 + i * 10,30), new Vector(30 + i * 10,40), new Vector(40 + i * 10,30)));
+		//}
+		
+		/*
+		int points = 5;
 		Vector[] circlePoints = new Vector[points];
 		double radius = 100;
 		for(int i = 0; i < points; i++) {
@@ -24,9 +30,9 @@ public class Level {
 		
 		System.out.println(circle.getInertia());
 		System.out.println(circle.getMass());
+		*/
 		
-		
-		
+		objects.add(new LevelGeometry(new Vector(-100,0), new Vector(-100, 1000), new Vector(1000,1000)));
 		objects.add(new LevelGeometry(new Vector(-100,-100), new Vector(-100, 1000), new Vector(10,1000), new Vector(10,-100)));
 		objects.add(new LevelGeometry(new Vector(900,-100), new Vector(900, 1000), new Vector(1000,1000), new Vector(1000,-100)));
 		objects.add(new LevelGeometry(new Vector(10,-100), new Vector(10, 10), new Vector(1000,10), new Vector(1000,-100)));
@@ -54,16 +60,32 @@ public class Level {
 	}
 
 	public void update() {
-		for(Solid object : objects) {
-			object.applyForce(new Vector(0, gravity).scale(object.getMass()), object.getPosition());
+		if(!paused) {
+			for(Solid object : objects) {
+				object.applyForce(new Vector(0, gravity).scale(object.getMass()), object.getPosition());
+			}
+			List<Collision> collisions = Collision.getAllCollisions(objects);
+			Collision.collide(collisions);
+			for(Solid object : objects) {
+				object.update();
+			}
+			Collision.uncollide(collisions);
+			System.out.println(objects.get(0).getMechanicalEnergy() + objects.get(1).getMechanicalEnergy());
 		}
-		List<Collision> collisions = Collision.getAllCollisions(objects);
-		Collision.collide(collisions);
-		for(Solid object : objects) {
-			object.update();
+		else {
+			if(Game.mousePressed[1]) {
+				int points = 3;
+				Vector[] circlePoints = new Vector[points];
+				double radius = 20;
+				for(int i = 0; i < points; i++) {
+					circlePoints[i] = new Vector(Math.cos(2 * Math.PI * i / points), Math.sin(2 * Math.PI * i / points)).scale(radius).add(new Vector(Game.mouseX,Game.mouseY));
+				}
+				Movable circle = new Movable(circlePoints);
+				objects.add(0, circle);
+			}
 		}
-		Collision.uncollide(collisions);
-		
-		//System.out.println(objects.get(0).toString());
+		if(Game.keysPressed[KeyEvent.VK_SPACE]) {
+			paused = !paused;
+		}
 	}
 }
