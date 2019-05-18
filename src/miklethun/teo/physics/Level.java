@@ -18,21 +18,29 @@ public class Level {
 		//	objects.add(new Movable(new Vector(30 + i * 10,30), new Vector(30 + i * 10,40), new Vector(40 + i * 10,30)));
 		//}
 		
-		/*
-		int points = 5;
-		Vector[] circlePoints = new Vector[points];
-		double radius = 100;
-		for(int i = 0; i < points; i++) {
-			circlePoints[i] = new Vector(Math.cos(2 * Math.PI * i / points), Math.sin(2 * Math.PI * i / points)).scale(radius).add(new Vector(550,400));
+		
+		for(int points = 3; points < 250; points++) {
+			Vector[] circlePoints = new Vector[points];
+			double radius = 1;
+			for(int i = 0; i < points; i++) {
+				circlePoints[i] = new Vector(Math.cos(2 * Math.PI * i / points), Math.sin(2 * Math.PI * i / points)).scale(radius).add(new Vector(550,400));
+			}
+			Movable circle = new Movable(circlePoints);
+			objects.add(circle);
+			
+			System.out.println(circle.getInertia());
+			//System.out.println(circle.getMass());
 		}
-		Movable circle = new Movable(circlePoints);
-		objects.add(circle);
 		
-		System.out.println(circle.getInertia());
-		System.out.println(circle.getMass());
-		*/
 		
-		objects.add(new LevelGeometry(new Vector(-100,0), new Vector(-100, 1000), new Vector(1000,1000)));
+		//slope
+		//objects.add(new LevelGeometry(new Vector(-100,0), new Vector(-100, 1000), new Vector(1000,1000)));
+		
+		//slit
+		objects.add(new LevelGeometry(new Vector(450,-100), new Vector(450, 400), new Vector(470,400), new Vector(470,-100)));
+		objects.add(new LevelGeometry(new Vector(450, 1000), new Vector(450, 500), new Vector(470,500), new Vector(470, 1000)));
+		
+		//walls
 		objects.add(new LevelGeometry(new Vector(-100,-100), new Vector(-100, 1000), new Vector(10,1000), new Vector(10,-100)));
 		objects.add(new LevelGeometry(new Vector(900,-100), new Vector(900, 1000), new Vector(1000,1000), new Vector(1000,-100)));
 		objects.add(new LevelGeometry(new Vector(10,-100), new Vector(10, 10), new Vector(1000,10), new Vector(1000,-100)));
@@ -69,14 +77,21 @@ public class Level {
 			for(Solid object : objects) {
 				object.update();
 			}
-			Collision.uncollide(collisions);
+			Collision.uncollide(collisions, 1);
+			
+			double maxIterations = 10.0;
+			//Collision.uncollide(collisions, 1/maxIterations);
+			//for(int i = 2; i <= maxIterations; i++) {
+			//	Collision.uncollide(Collision.getAllCollisions(objects), i / maxIterations);
+			//}
+			
 			System.out.println(objects.get(0).getMechanicalEnergy() + objects.get(1).getMechanicalEnergy());
 		}
 		else {
 			if(Game.mousePressed[1]) {
 				int points = 3;
 				Vector[] circlePoints = new Vector[points];
-				double radius = 20;
+				double radius = 80;
 				for(int i = 0; i < points; i++) {
 					circlePoints[i] = new Vector(Math.cos(2 * Math.PI * i / points), Math.sin(2 * Math.PI * i / points)).scale(radius).add(new Vector(Game.mouseX,Game.mouseY));
 				}

@@ -44,6 +44,10 @@ public class Collision {
 				}
 			}
 		}
+		return collisions;
+	}
+	
+	public static List<Collision> sortCollisions(List<Collision> collisions) {
 		List<Collision> collisionsSorted = new ArrayList<Collision>();
 		for(int i = 0; i < collisions.size(); i++) {
 			if(collisions.get(i).hasPriority()) {
@@ -100,21 +104,21 @@ public class Collision {
 		collider2.applyForce(force.negative(), location);	
 	}
 	
-	public void uncollide() {//Moves any movable object out of the collision area
+	public void uncollide(double strength) {//Moves any movable object a given percent out of the collision area with
 		for(int i = 1; i <= 2; i++) {
 			Solid collider = i == 1 ? collider1 : collider2;
 			if(collider.getMass() != Double.POSITIVE_INFINITY) {
 				Line deepnessCheck = new Line(location, Vector.add(location, unitNormal.scale((i == 1 ? -1 : 1) * 0xffffff)));
 				List<Vector> intersectionsWithDeepnessCheck = collider.getPolygon().getIntersections(deepnessCheck);
 				Vector moveOut = location.subtract(Vector.closest(location, intersectionsWithDeepnessCheck.toArray(new Vector[intersectionsWithDeepnessCheck.size()])));
-				collider.setPosition(Vector.add(collider.getPosition(), moveOut));
+				collider.setPosition(Vector.add(collider.getPosition(), moveOut.scale(strength)));
 			}
 		}	
 	}
 	
-	public static void uncollide(List<Collision> collisions) {
+	public static void uncollide(List<Collision> collisions, double strength) {
 		for(Collision collision : collisions) {
-			collision.uncollide();
+			collision.uncollide(strength);
 		}
 	}
 	
