@@ -18,18 +18,15 @@ public class Level {
 		//	objects.add(new Movable(new Vector(30 + i * 10,30), new Vector(30 + i * 10,40), new Vector(40 + i * 10,30)));
 		//}
 		
-		
-		for(int points = 3; points < 250; points++) {
+		for(int j = 3; j < 250; j++) {
+			int points = j;
 			Vector[] circlePoints = new Vector[points];
 			double radius = 1;
 			for(int i = 0; i < points; i++) {
-				circlePoints[i] = new Vector(Math.cos(2 * Math.PI * i / points), Math.sin(2 * Math.PI * i / points)).scale(radius).add(new Vector(550,400));
+				circlePoints[i] = new Vector(Math.cos(2 * Math.PI * i / points), Math.sin(2 * Math.PI * i / points)).scale(radius).add(new Vector(Game.mouseX,Game.mouseY));
 			}
 			Movable circle = new Movable(circlePoints);
-			objects.add(circle);
-			
-			System.out.println(circle.getInertia());
-			//System.out.println(circle.getMass());
+			System.out.println(circle.getMass());
 		}
 		
 		
@@ -91,7 +88,7 @@ public class Level {
 			if(Game.mousePressed[1]) {
 				int points = 3;
 				Vector[] circlePoints = new Vector[points];
-				double radius = 80;
+				double radius = 23;
 				for(int i = 0; i < points; i++) {
 					circlePoints[i] = new Vector(Math.cos(2 * Math.PI * i / points), Math.sin(2 * Math.PI * i / points)).scale(radius).add(new Vector(Game.mouseX,Game.mouseY));
 				}
