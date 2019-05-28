@@ -60,7 +60,7 @@ public abstract class Solid implements LevelObject {
 		}
 		else if(Game.mouseReleased[1] && firstPoint != null) {
 			Vector newPoint = new Vector(Game.mouseX, Game.mouseY);
-			applyForce(newPoint.subtract(firstPoint).scale(0.02), firstPoint);
+			applyForce(newPoint.subtract(firstPoint).scale(mass / 25), firstPoint);
 			firstPoint = null;
 		}
 	}
@@ -122,5 +122,15 @@ public abstract class Solid implements LevelObject {
 	
 	public String toString() {
 		return "Energy: " + getMechanicalEnergy();
+	}
+	
+	public static Vector centerOfMass(Solid...solids) {
+		Vector centerOfMass = new Vector(0,0);
+		double totalMass = 0;
+		for(Solid solid : solids) {
+			centerOfMass = centerOfMass.add(solid.getPosition().scale(solid.getMass()));
+			totalMass += solid.getMass();
+		}
+		return centerOfMass.scale(1 / totalMass);
 	}
 }
